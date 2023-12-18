@@ -1,24 +1,26 @@
 package com.pluralsight.healthcare.cli;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class PatientRetriever {
+    private static final Logger LOG = LoggerFactory.getLogger(PatientRetriever.class);
 
     public static void main(String... args) {
-        System.out.println("PatientRetriever started!");
+        LOG.info("PatientRetriever starting");
         if (args.length == 0) {
-            System.out.println("Please provide a facility name as first argument.");
+            LOG.warn("Please provide a facility name as first argument.");
             return;
         }
 
         try {
             retrievePatients(args[0]);
         } catch (Exception e) {
-            System.out.println("Unexpected error");
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            LOG.error("Unexpected error", e);
         }
     }
 
     private static void retrievePatients(String facilityId) {
-        System.out.println("Retrieving patients for facility " + facilityId);
+        LOG.info("Retrieving patients for facility '{}'", facilityId);
     }
 }
