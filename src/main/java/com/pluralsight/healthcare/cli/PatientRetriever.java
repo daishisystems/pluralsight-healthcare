@@ -1,5 +1,6 @@
 package com.pluralsight.healthcare.cli;
 
+import com.pluralsight.healthcare.cli.service.ExternalPatientsManifest;
 import com.pluralsight.healthcare.cli.service.PatientRetrievalService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,7 @@ public class PatientRetriever {
         LOG.info("Retrieving patients for facility '{}'", facilityId);
         PatientRetrievalService patientRetrievalService = new PatientRetrievalService();
 
-        String patientsToStore = patientRetrievalService.getPatientsFor(facilityId);
-        LOG.info("Retrieved the following patients {}", patientsToStore);
+        ExternalPatientsManifest patientsToStore = patientRetrievalService.getPatientsFor(facilityId);
+        LOG.info("Retrieved the following {} patients {}", patientsToStore.results().size(), patientsToStore);
     }
 }
