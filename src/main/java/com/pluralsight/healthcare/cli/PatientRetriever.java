@@ -1,9 +1,12 @@
 package com.pluralsight.healthcare.cli;
 
-import com.pluralsight.healthcare.cli.service.ExternalPatientsManifest;
 import com.pluralsight.healthcare.cli.service.PatientRetrievalService;
+import com.pluralsight.healthcare.cli.service.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Objects;
 
 public class PatientRetriever {
     private static final Logger LOG = LoggerFactory.getLogger(PatientRetriever.class);
@@ -26,7 +29,11 @@ public class PatientRetriever {
         LOG.info("Retrieving patients for facility '{}'", facilityId);
         PatientRetrievalService patientRetrievalService = new PatientRetrievalService();
 
-        ExternalPatientsManifest patientsToStore = patientRetrievalService.getPatientsFor(facilityId);
-        LOG.info("Retrieved the following {} patients {}", patientsToStore.results().size(), patientsToStore);
+        List<Result> patientsToStore = patientRetrievalService.getPatientsFor(facilityId)
+                .results()
+                .stream()
+                .filter(result -> Objects.equals(result.gender(), "female"))
+                .toList();
+        LOG.info("Retrieved the following {} patients {}", patientsToStore.size(), patientsToStore);
     }
 }
