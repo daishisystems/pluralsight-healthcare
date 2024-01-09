@@ -1,5 +1,8 @@
 package com.pluralsight.healthcare.cli.service;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record Result(
         String gender,
         Name name,
