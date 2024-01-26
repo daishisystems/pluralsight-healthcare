@@ -1,6 +1,7 @@
 package com.pluralsight.healthcare.domain;
 
-public record Patient(String id, String firstName, String surname, String gender, String phone, String nat, String email) {
+public record Patient(String id, String firstName, String surname, String gender, String phone, String nat,
+                      String email) {
 
     public Patient {
         filled(id);
@@ -8,7 +9,7 @@ public record Patient(String id, String firstName, String surname, String gender
         filled(surname);
         filled(gender);
         filled(phone);
-        filled (nat);
+        filled(nat);
         filled(email);
     }
 

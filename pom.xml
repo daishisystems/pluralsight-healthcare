@@ -11,6 +11,7 @@
     <modules>
         <module>pluralsight-healthcare-repository</module>
         <module>pluralsight-healthcare-cli</module>
+        <module>pluralsight-healthcare-server</module>
     </modules>
 
     <properties>
