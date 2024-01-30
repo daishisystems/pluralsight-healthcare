@@ -34,7 +34,7 @@ public class PatientResource {
                     .sorted(Comparator.comparing(Patient::id))
                     .toList();
         } catch (RepositoryException e) {
-            LOG.error("Could not retrieve patients from teh database.", e);
+            LOG.error("Could not retrieve patients from the database.", e);
             throw new NotFoundException();
         }
     }
