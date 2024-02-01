@@ -12,5 +12,7 @@ public interface PatientRepository {
 
     void savePatient(Patient patient);
 
+    void addNotes(String id, String notes);
+
     List<Patient> getAllPatients();
 }

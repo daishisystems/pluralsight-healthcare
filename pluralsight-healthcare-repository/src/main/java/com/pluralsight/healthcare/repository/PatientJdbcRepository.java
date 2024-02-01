@@ -8,6 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 class PatientJdbcRepository implements PatientRepository {
 
@@ -17,6 +18,11 @@ class PatientJdbcRepository implements PatientRepository {
     private static final String INSERT_PATIENT = """
             MERGE INTO Patients (ID, FIRSTNAME, SURNAME, GENDER, PHONE, NAT, EMAIL)
             VALUES(?, ?, ?, ?, ?, ?, ?)
+            """;
+
+    private static final String ADD_NOTES = """
+            UPDATE Patients SET NOTES = ?
+            WHERE ID = ?
             """;
 
     private final DataSource dataSource;
@@ -45,6 +51,18 @@ class PatientJdbcRepository implements PatientRepository {
     }
 
     @Override
+    public void addNotes(String id, String notes) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement(ADD_NOTES);
+            preparedStatement.setString(1, notes);
+            preparedStatement.setString(2, id);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            throw new RepositoryException("Failed to add notes to " + id, e);
+        }
+    }
+
+    @Override
     public List<Patient> getAllPatients() {
         try (Connection connection = dataSource.getConnection()) {
             Statement statement = connection.createStatement();
@@ -58,8 +76,8 @@ class PatientJdbcRepository implements PatientRepository {
                         resultSet.getString(4),
                         resultSet.getString(5),
                         resultSet.getString(6),
-                        resultSet.getString(7)
-                );
+                        resultSet.getString(7),
+                        Optional.ofNullable(resultSet.getString(8)));
                 patients.add(patient);
             }
             return Collections.unmodifiableList(patients);
