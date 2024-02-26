@@ -5,6 +5,8 @@ import com.pluralsight.healthcare.repository.PatientRepository;
 import com.pluralsight.healthcare.repository.RepositoryException;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +40,14 @@ public class PatientResource {
     @POST
     @Path("/{id}/notes")
     @Consumes(MediaType.TEXT_PLAIN)
-    public void addNotes(@PathParam("id") String id, String notes) {
-        patientRepository.addNotes(id, notes);
+    public Response addNotes(@PathParam("id") String id, String notes) {
+        // Sanitize the notes to escape special characters
+        String sanitizedNotes = StringEscapeUtils.escapeJson(notes);
+
+        // Assuming validation passes, proceed with adding sanitized notes
+        patientRepository.addNotes(id, sanitizedNotes);
+
+        // Return a 200 OK response
+        return Response.ok().build();
     }
 }
