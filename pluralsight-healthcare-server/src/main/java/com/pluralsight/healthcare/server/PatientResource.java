@@ -5,6 +5,7 @@ import com.pluralsight.healthcare.repository.PatientRepository;
 import com.pluralsight.healthcare.repository.RepositoryException;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,19 @@ public class PatientResource {
     @POST
     @Path("/{id}/notes")
     @Consumes(MediaType.TEXT_PLAIN)
-    public void addNotes(@PathParam("id") String id, String notes) {
+    public Response addNotes(@PathParam("id") String id, String notes) {
+        // Check for NULL bytes in the notes
+        if (notes.contains("\\0")) {
+            // Return a 400 Bad Request response if NULL bytes are found
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Invalid input: notes contain NULL bytes.")
+                    .build();
+        }
+
+        // Proceed with adding notes if no NULL bytes are found
         patientRepository.addNotes(id, notes);
+
+        // Return a 200 OK response indicating success
+        return Response.ok().build();
     }
 }
