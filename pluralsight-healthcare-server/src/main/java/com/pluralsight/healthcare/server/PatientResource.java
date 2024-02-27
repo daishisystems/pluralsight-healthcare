@@ -5,6 +5,7 @@ import com.pluralsight.healthcare.repository.PatientRepository;
 import com.pluralsight.healthcare.repository.RepositoryException;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,20 @@ public class PatientResource {
     @POST
     @Path("/{id}/notes")
     @Consumes(MediaType.TEXT_PLAIN)
-    public void addNotes(@PathParam("id") String id, String notes) {
+    public Response addNotes(@PathParam("id") String id, String notes) {
+        // Check for newline characters in notes
+        if (notes.contains("\\n") || notes.contains("\\r")) {
+            // Return a 400 Bad Request response if newline characters are found
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity("Notes cannot contain newline characters.")
+                    .build();
+        }
+
+        // Proceed with adding notes if there are no newline characters
         patientRepository.addNotes(id, notes);
+
+        // Return a 200 OK response indicating success
+        return Response.ok().build();
     }
 }
