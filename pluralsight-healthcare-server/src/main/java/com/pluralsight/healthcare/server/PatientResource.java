@@ -5,6 +5,7 @@ import com.pluralsight.healthcare.repository.PatientRepository;
 import com.pluralsight.healthcare.repository.RepositoryException;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,22 @@ public class PatientResource {
     @POST
     @Path("/{id}/notes")
     @Consumes(MediaType.TEXT_PLAIN)
-    public void addNotes(@PathParam("id") String id, String notes) {
+    public Response addNotes(@PathParam("id") String id, String notes) {
+        // Define a maximum length for the notes
+        final int MAX_LENGTH = 18; // Example limit
+
+        // Check if the notes exceed the maximum length
+        if (notes.length() > MAX_LENGTH) {
+            // Return a 400 Bad Request response if the notes are too long
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Notes exceed the maximum length of " + MAX_LENGTH + " characters.")
+                    .build();
+        }
+
+        // Proceed with adding notes if validation passes
         patientRepository.addNotes(id, notes);
+
+        // Return a 200 OK response indicating success
+        return Response.ok().build();
     }
 }
