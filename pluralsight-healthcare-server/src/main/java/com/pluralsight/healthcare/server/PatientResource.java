@@ -5,6 +5,7 @@ import com.pluralsight.healthcare.repository.PatientRepository;
 import com.pluralsight.healthcare.repository.RepositoryException;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,17 @@ public class PatientResource {
     @POST
     @Path("/{id}/notes")
     @Consumes(MediaType.TEXT_PLAIN)
-    public void addNotes(@PathParam("id") String id, String notes) {
-        patientRepository.addNotes(id, notes);
+    public Response addNotes(@PathParam("id") String id, String notes) {
+        // Encode the notes to ASCII, ignoring any non-ASCII characters, and then decode back to a string
+        String sanitizedNotes = notes.chars()
+                .filter(c -> c <= 127) // Restrict to ASCII characters
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+
+        // Proceed with adding sanitized notes if validation passes
+        patientRepository.addNotes(id, sanitizedNotes);
+
+        // Return a 200 OK response indicating success
+        return Response.ok().build();
     }
 }
