@@ -49,7 +49,8 @@ public class PatientResource {
             // Return a 400 Bad Request response if validation fails
             return Response
                     .status(Response.Status.BAD_REQUEST)
-                    .entity("The format of the notes payload is invalid. It must be between " + minLength + " and " + maxLength + " characters.")
+                    .entity("The format of the notes payload is invalid. It must be between "
+                            + minLength + " and " + maxLength + " characters.")
                     .build();
         }
 
