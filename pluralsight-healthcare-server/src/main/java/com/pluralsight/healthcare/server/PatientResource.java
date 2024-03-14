@@ -40,19 +40,20 @@ public class PatientResource {
     @Path("/{id}/notes")
     @Consumes(MediaType.TEXT_PLAIN)
     public Response addNotes(@PathParam("id") String id, String notes) {
-        // Define a maximum length for the notes
-        final int MAX_LENGTH = 18; // Example limit
-
-        // Check if the notes exceed the maximum length
-        if (notes.length() > MAX_LENGTH) {
-            // Return a 400 Bad Request response if the notes are too long
+        // Validate that the notes parameter is a valid integer
+        try {
+            // This will throw NumberFormatException if notes is not a valid integer
+            Integer.parseInt(notes);
+        } catch (NumberFormatException e) {
+            // Return a 400 Bad Request response if notes is not a valid integer
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Notes exceed the maximum length of " + MAX_LENGTH + " characters.")
+                    .entity("Notes must be a valid integer.")
                     .build();
         }
 
         // Proceed with adding notes if validation passes
-        patientRepository.addNotes(id, notes);
+        // Ensure your repository method can handle the integer input appropriately
+        patientRepository.addNotes(id, String.valueOf(Integer.parseInt(notes)));
 
         // Return a 200 OK response indicating success
         return Response.ok().build();
