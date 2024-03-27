@@ -39,6 +39,15 @@ public class PatientResource {
     @Path("/{id}/notes")
     @Consumes(MediaType.TEXT_PLAIN)
     public void addNotes(@PathParam("id") String id, String notes) {
-        patientRepository.addNotes(id, notes);
+        StringBuilder sanitizedNotes = new StringBuilder();
+        for (char ch : notes.toCharArray()) {
+            if (ch <= 127) {
+                sanitizedNotes.append(ch);
+            }
+        }
+
+        patientRepository.addNotes(id, sanitizedNotes.toString());
+
     }
+
 }
